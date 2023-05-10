@@ -1,13 +1,45 @@
-import json
-from dotenv import load_dotenv
-import os
 import openai
 import streamlit as st
-from src.GPTInterface.SimpleQuery import SimpleQuery
 from pathlib import Path
 import sys
 import extra_streamlit_components as stx
 from openai.error import AuthenticationError, InvalidRequestError
+
+class SimpleQuery:
+    def __init__(self, messages = None, quiet = False, model = "gpt-3.5-turbo-0301"):
+        self.quiet = quiet
+        self.model = model
+        if messages == None:
+            self.messages = []
+        else: 
+            self.messages = messages
+
+    def append(self, role, content):
+        if role != "user" and role != "system" and role != "assistant":
+            raise ValueError("role must be either 'user' or 'system' or 'assistant'")
+
+        self.messages.append({"role": role, "content": content})
+
+    def make_purchase(self, messages, model):
+        return openai.ChatCompletion.create(
+            model=model,
+            messages=messages,
+            temperature=0.5,
+        )
+
+    def run(self):
+        response = self.make_purchase(self.messages, self.model)
+        if response is not None:
+            return response["choices"][0]["message"]["content"].strip()
+        else: 
+            return None
+
+    def __str__(self):
+        return self.__repr__()
+    
+    def __repr__(self) -> str:
+        return f"SimpleQuery({self.messages})"
+
 
 # I don't really understand this, but it fixes import errors
 sys.path.append(str(Path(__file__).resolve().parent.parent))
