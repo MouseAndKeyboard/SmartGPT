@@ -39,11 +39,7 @@ class SimpleQuery:
     
     def __repr__(self) -> str:
         return f"SimpleQuery({self.messages})"
-
-
-# I don't really understand this, but it fixes import errors
-sys.path.append(str(Path(__file__).resolve().parent.parent))
-
+ 
 st.set_page_config(page_title="Smart-GPT", page_icon=":brain:", layout="centered", initial_sidebar_state="auto", menu_items=None)
 
 hide_streamlit_style = """
